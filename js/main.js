@@ -1,10 +1,9 @@
 // #([900, 700], [853, 172], [75, 600], 2000, 17),
+// # Test7 = 12 [200,400], [20,40],[10,2],500
 
 var canvas, ctx;
 var slider;
 var output;
-
-var lastX, lastY;
 
 var PLAYER_X = 853;
 var PLAYER_Y = 172;
@@ -43,7 +42,7 @@ function initialise() {
 
     drawPlayers();
 
-    this.value = 12;
+    //this.value = 71;
     var rad = (this.value / 360) * Math.PI * 2;
     var dx = Math.sin(rad);
     var dy = Math.cos(rad);
@@ -73,7 +72,7 @@ function drawLine(line) {
 
 
 function findNearestHitWall(startx, starty, endx, endy, dx, dy) {
-  var slope = dx / dy;
+  var slope = dy / dx;
   // (y-y1)=m(x-x1)
   // y=slope(x-startx)+starty
   // y=slope*x - slope*startx + starty
@@ -139,7 +138,7 @@ function generateLines(dx, dy) {
   var startx = PLAYER_X;
   var starty = PLAYER_Y;
   var range = MAX_RANGE;
-  while (range > 0) {
+  while (range > 1) {
     var xmove = dx * range;
     var ymove = dy * range;
     var endx = xmove + startx;
