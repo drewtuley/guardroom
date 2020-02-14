@@ -63,7 +63,10 @@ function drawLine(line) {
   ctx.beginPath();
   ctx.moveTo(line.startx, line.starty);
   ctx.lineTo(line.endx, line.endy);
-  ctx.strokeStyle = '#FF0000';
+  if (line.close)
+    ctx.strokeStyle = '#00FF00';
+  else
+    ctx.strokeStyle = '#FF0000';
   ctx.stroke();
   var midx = line.startx + (line.endx - line.startx) / 2;
   var midy = line.starty + (line.endy - line.starty) / 2;
@@ -89,7 +92,7 @@ function findNearestHitWall(startx, starty, endx, endy, dx, dy) {
   var x_at_max_y = (HEIGHT - b) / slope;
   var endpoint = {wall: NONE};
   if (dx > 0 && dy > 0) {
-    if (0< endx && endx < WIDTH && 0< endy && endy < HEIGHT) {
+    if (0 < endx && endx < WIDTH && 0 < endy && endy < HEIGHT) {
       endpoint = {wall: NONE};
     } else {
       if (y_at_max_x < HEIGHT) {
@@ -99,7 +102,7 @@ function findNearestHitWall(startx, starty, endx, endy, dx, dy) {
       }
     }
   } else if (dx > 0 && dy < 0) {
-    if (0< endx && endx < WIDTH && 0< endy && endy < HEIGHT) {
+    if (0 < endx && endx < WIDTH && 0 < endy && endy < HEIGHT) {
       endpoint = {wall: NONE};
     } else {
       if (y_at_max_x > 0) {
@@ -109,7 +112,7 @@ function findNearestHitWall(startx, starty, endx, endy, dx, dy) {
       }
     }
   } else if (dx < 0 && dy > 0) {
-    if (0< endx && endx < WIDTH && 0< endy && endy < HEIGHT) {
+    if (0 < endx && endx < WIDTH && 0 < endy && endy < HEIGHT) {
       endpoint = {wall: NONE};
     } else {
       if (y_at_min_x < HEIGHT) {
@@ -119,7 +122,7 @@ function findNearestHitWall(startx, starty, endx, endy, dx, dy) {
       }
     }
   } else if (dx < 0 && dy < 0) {
-    if (0< endx && endx < WIDTH && 0< endy && endy < HEIGHT) {
+    if (0 < endx && endx < WIDTH && 0 < endy && endy < HEIGHT) {
       endpoint = {wall: NONE};
     } else {
       if (y_at_min_x > 0) {
@@ -180,13 +183,23 @@ function generateLines(dx, dy) {
       hypo_move = Math.sqrt(xmove * xmove + ymove * ymove);
       range -= hypo_move;
     }
-    segments.push({startx: startx, starty: starty, endx: endx, endy: endy, length: hypo_move});
+    segment = {startx: startx, starty: starty, endx: endx, endy: endy, length: hypo_move}
+    segment = assessHit(segment);
+    segments.push(segment);
+
     startx = endx;
     starty = endy;
   }
 
-
   return segments;
+}
+
+function assessHit(segment) {
+  if (GUARD_X > Math.min(segment.startx, segment.endx) && GUARD_X < Math.max(segment.startx, segment.endx)
+    && GUARD_Y > Math.min(segment.starty, segment.endy) && GUARD_Y < Math.max(segment.starty, segment.endy)) {
+    segment.close = true;
+  }
+  return segment;
 }
 
 function drawPlayers() {
